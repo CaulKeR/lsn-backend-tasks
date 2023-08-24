@@ -15,8 +15,9 @@ the list of integers separated with a space symbol in one line. For example: *'1
 will see the pairs that sum up to 13. Each pair in the output will have a first number not greater than the second one,
 and lines will be sorted in ascending order.
 
-I checked every element in the previously sorted list with each other for the sum of 13. If the sum is more than 13, 2nd
-cycle iteration will be broken because all numbers to the right are bigger than the current one for sure.
+I iterated through the input list and put result of subtraction of the current element from 13 into the set. If the
+result is already in the set, I add a pair of numbers into the output list. At the end I sort the output list and print
+it.
 
 # Task 3
 
@@ -25,7 +26,7 @@ input contains a positive number *n*, and the next *n* lines contain pairs of po
 identifies a connection between two vertices in a graph. As output, you will get a number of separate graphs from the
 input.
 
-I put a set of vertices into the list and iterate through the input vertices pairs, checking if I have such vertice in
-the already existing graph. If both of the vertices are occurs into separate graphs they'll be joined into one. If
-vertice occurs in the one graph, it'll be extended with one new occurs. If vertices are not in any existing graphs, a
-new graph will be added to the set.
+I put all vertices into the map as keys and all connections as values. Then I iterated through the map and for each
+vertex I checked if it is already in the set of visited vertices. If not, I added it to the stack and iterated through
+the stack until it is empty. For each vertex in the stack I added all its connections to the stack and marked the vertex
+as visited. At the end I got the number of separate graphs.

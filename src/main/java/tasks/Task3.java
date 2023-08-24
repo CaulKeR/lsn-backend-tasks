@@ -13,40 +13,51 @@ public class Task3 {
         try (Scanner scanner = new Scanner(System.in)) {
             String input = scanner.nextLine();
             int n = Integer.parseInt(input);
-            List<Set<Integer>> graphs = new ArrayList<>();
+            List<List<Integer>> edges = new ArrayList<>();
             while (n-- > 0) {
                 String inputPair = scanner.nextLine();
                 String[] vertices = inputPair.split(IoUtils.SPACE);
-                int v1 = Integer.parseInt(vertices[0]);
-                int v2 = Integer.parseInt(vertices[1]);
-                Set<Integer> firstVGraph = null;
-                Set<Integer> secondVGraph = null;
-                for (Set<Integer> graph : graphs) {
-                    if (graph.contains(v1)) {
-                        firstVGraph = new HashSet<>(graph);
-                    }
-                    if (graph.contains(v2)) {
-                        secondVGraph = new HashSet<>(graph);
-                    }
-                }
-                if (firstVGraph == null && secondVGraph == null) {
-                    Set<Integer> graph = new HashSet<>();
-                    graph.add(v1);
-                    graph.add(v2);
-                    graphs.add(graph);
-                } else if (firstVGraph == null) {
-                    secondVGraph.add(v1);
-                } else if (secondVGraph == null) {
-                    firstVGraph.add(v2);
-                } else if (firstVGraph != secondVGraph) {
-                    firstVGraph.addAll(secondVGraph);
-                    graphs.remove(secondVGraph);
-                }
+                edges.add(
+                        Arrays.asList(
+                                Integer.parseInt(vertices[0]),
+                                Integer.parseInt(vertices[1])));
             }
-            System.out.println(graphs.size());
+            System.out.println(countSeparateGraphs(edges));
         } catch (Exception e) {
             throw new RuntimeException("Error while reading input", e);
         }
+    }
+
+    private static Map<Integer, List<Integer>> createGraphs(List<List<Integer>> edges) {
+        Map<Integer, List<Integer>> graphs = new HashMap<>();
+        for (List<Integer> edge : edges) {
+            graphs.putIfAbsent(edge.get(0), new ArrayList<>());
+            graphs.putIfAbsent(edge.get(1), new ArrayList<>());
+            graphs.get(edge.get(0)).add(edge.get(1));
+            graphs.get(edge.get(1)).add(edge.get(0));
+        }
+        return graphs;
+    }
+
+    private static int countSeparateGraphs(List<List<Integer>> edges) {
+        Map<Integer, List<Integer>> graphs = createGraphs(edges);
+        Set<Integer> visited = new HashSet<>();
+        int separatedGraphs = 0;
+        for (int vertex : graphs.keySet()) {
+            if (!visited.contains(vertex)) {
+                separatedGraphs++;
+                Stack<Integer> stack = new Stack<>();
+                stack.push(vertex);
+                while (!stack.isEmpty()) {
+                    Integer currentValue = stack.pop();
+                    if (!visited.contains(currentValue)) {
+                        visited.add(currentValue);
+                        stack.addAll(graphs.get(currentValue));
+                    }
+                }
+            }
+        }
+        return separatedGraphs;
     }
 
 }

@@ -3,7 +3,9 @@ package tasks;
 import util.IoUtils;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /***
  * @author - Kiryl Karpuk
@@ -11,20 +13,19 @@ import java.util.List;
 public class Task2 {
 
     public static void main(String[] args) {
-        List<Integer> input = IoUtils.askForInput();
-        input.sort(Integer::compareTo);
         List<String> pairs = new ArrayList<>();
-        for (int i = 0; i < input.size(); i++) {
-            for (int j = i + 1; j < input.size(); j++) {
-                if (input.get(i) + input.get(j) > 13) {
-                    break;
-                }
-                if (input.get(i) + input.get(j) == 13) {
-                    pairs.add(input.get(i) + IoUtils.SPACE + input.get(j));
-                }
+        Set<Integer> difference = new HashSet<>();
+        for (Integer number : IoUtils.askForInput()) {
+            int currentDifference = 13 - number;
+            if (difference.contains(number)) {
+                pairs.add(
+                        Math.min(number, currentDifference) +
+                        IoUtils.SPACE +
+                        Math.max(number, currentDifference));
             }
+            difference.add(currentDifference);
         }
-        pairs.forEach(System.out::println);
+        pairs.stream().sorted().forEach(System.out::println);
     }
 
 }
